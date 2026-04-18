@@ -1,65 +1,93 @@
 "use client";
 
-import { useState } from "react";
-import { motion } from "framer-motion";
-import { Shirt, Search, Plus, RotateCcw } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { useState, useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Shirt, Search, Plus, RotateCcw, SlidersHorizontal, Download, Sparkles } from "lucide-react";
+import { cn } from "../../lib/utils"; // Adjust path if your utils are elsewhere
 
+// ============================================================================
+// MOCK DATA (Premium Naming)
+// ============================================================================
+const MOCK_INVENTORY = [
+  { id: 1, name: "Obsidian Structured Tee", category: "Tops", color: "bg-[#111111]" },
+  { id: 2, name: "Cashmere Ribbed Knit", category: "Tops", color: "bg-[#d4d4d8]" },
+  { id: 3, name: "Vintage Selvedge Jacket", category: "Tops", color: "bg-[#1e3a8a]" },
+  { id: 4, name: "Architectural Cargos", category: "Bottoms", color: "bg-[#14532d]" },
+  { id: 5, name: "Wool Trousers", category: "Bottoms", color: "bg-[#0a0a0a]" },
+  { id: 6, name: "Platform Derbies", category: "Shoes", color: "bg-[#e5e5e5]" },
+  { id: 7, name: "Silk Camp Collar", category: "Tops", color: "bg-[#0f766e]" },
+  { id: 8, name: "Distressed Denim", category: "Bottoms", color: "bg-[#3b82f6]" },
+];
+
+const CATEGORIES = ["All", "Tops", "Bottoms", "Shoes", "Accessories"];
+
+// ============================================================================
+// MAIN WARDROBE COMPONENT
+// ============================================================================
 export default function Wardrobe() {
-  const [activeCategory, setActiveCategory] = useState("Tops");
+  const [activeCategory, setActiveCategory] = useState("All");
+  const [searchQuery, setSearchQuery] = useState("");
+  const canvasRef = useRef(null); // Reference for drag boundaries
 
-  // Mock Inventory Data
-  const inventory = [
-    { id: 1, name: "Oversized Graphic Tee", category: "Tops", color: "bg-zinc-800" },
-    { id: 2, name: "Ribbed Knit Sweater", category: "Tops", color: "bg-stone-300" },
-    { id: 3, name: "Vintage Denim Jacket", category: "Tops", color: "bg-blue-900" },
-    { id: 4, name: "Wide Leg Cargos", category: "Bottoms", color: "bg-green-900" },
-    { id: 5, name: "Tailored Trousers", category: "Bottoms", color: "bg-zinc-900" },
-    { id: 6, name: "Chunky Sneakers", category: "Shoes", color: "bg-white" },
-  ];
-
-  const categories = ["All", "Tops", "Bottoms", "Shoes", "Accessories"];
-
-  const filteredInventory = activeCategory === "All" 
-    ? inventory 
-    : inventory.filter(item => item.category === activeCategory);
+  // Filter Logic
+  const filteredInventory = MOCK_INVENTORY.filter(item => {
+    const matchesCategory = activeCategory === "All" || item.category === activeCategory;
+    const matchesSearch = item.name.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchesCategory && matchesSearch;
+  });
 
   return (
-    <div className="max-w-[1400px] mx-auto px-6 min-h-[85vh] flex flex-col md:flex-row gap-8">
+    <main className="w-full min-h-screen pt-32 pb-12 px-6 max-w-[1600px] mx-auto flex flex-col xl:flex-row gap-8">
       
-      {/* LEFT PANEL: The Inventory */}
+      {/* =======================================================================
+          LEFT PANEL: THE INVENTORY
+          ======================================================================= */}
       <motion.div 
-        initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} 
-        className="w-full md:w-1/3 glass-panel rounded-3xl p-6 flex flex-col h-[80vh]"
+        initial={{ opacity: 0, x: -40 }} 
+        animate={{ opacity: 1, x: 0 }} 
+        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+        className="w-full xl:w-1/3 glass-pill rounded-[2.5rem] p-8 flex flex-col h-[80vh] border border-white/5 relative overflow-hidden"
       >
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold flex items-center gap-2">
-            <Shirt className="text-purple-400" /> My Closet
-          </h2>
-          <button className="p-2 bg-white/5 hover:bg-white/10 rounded-full transition">
+        {/* Subtle Background Glow */}
+        <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-purple-500/10 to-transparent pointer-events-none" />
+
+        {/* Header */}
+        <div className="flex justify-between items-center mb-8 relative z-10">
+          <div>
+            <h1 className="font-serif text-3xl text-white mb-1">Digital Closet</h1>
+            <p className="font-sans text-xs text-[#888888] tracking-widest uppercase">{MOCK_INVENTORY.length} Items Indexed</p>
+          </div>
+          <button className="w-12 h-12 rounded-full border border-white/10 bg-white/5 flex items-center justify-center text-white hover:bg-white hover:text-black transition-colors duration-300">
             <Plus size={20} />
           </button>
         </div>
 
-        {/* Search & Filter */}
-        <div className="relative mb-6">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500" size={16} />
+        {/* Search Bar */}
+        <div className="relative mb-6 z-10 group">
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-[#666666] group-focus-within:text-cyan-400 transition-colors" size={18} />
           <input 
             type="text" 
-            placeholder="Search items..." 
-            className="w-full bg-black/40 border border-white/10 rounded-xl pl-10 pr-4 py-3 text-sm text-white outline-none focus:border-cyan-500/50 transition"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search assets..." 
+            className="w-full bg-[#0a0a0a]/50 border border-white/10 rounded-2xl pl-12 pr-12 py-4 text-sm text-white outline-none focus:border-cyan-500/50 transition-colors placeholder:text-[#555555] font-sans"
           />
+          <button className="absolute right-4 top-1/2 -translate-y-1/2 text-[#666666] hover:text-white transition-colors">
+            <SlidersHorizontal size={18} />
+          </button>
         </div>
 
-        {/* Category Pills */}
-        <div className="flex gap-2 overflow-x-auto pb-4 scrollbar-hide mb-2">
-          {categories.map((cat) => (
+        {/* Category Selector (Scrollable) */}
+        <div className="flex gap-2 overflow-x-auto pb-4 scrollbar-hide mb-4 z-10 mask-fade-edges">
+          {CATEGORIES.map((cat) => (
             <button
               key={cat}
               onClick={() => setActiveCategory(cat)}
               className={cn(
-                "px-4 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all",
-                activeCategory === cat ? "bg-white text-black" : "bg-white/5 text-zinc-400 hover:text-white"
+                "px-5 py-2 rounded-full font-sans text-xs font-semibold tracking-wider whitespace-nowrap transition-all duration-300",
+                activeCategory === cat 
+                  ? "bg-white text-black shadow-[0_0_20px_rgba(255,255,255,0.2)]" 
+                  : "bg-transparent text-[#888888] border border-white/10 hover:border-white/30 hover:text-white"
               )}
             >
               {cat}
@@ -68,47 +96,87 @@ export default function Wardrobe() {
         </div>
 
         {/* Draggable Items Grid */}
-        <div className="flex-1 overflow-y-auto pr-2 grid grid-cols-2 gap-4 pb-4">
-          {filteredInventory.map((item) => (
-            <motion.div
-              key={item.id}
-              drag
-              dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
-              dragElastic={0.2}
-              whileDrag={{ scale: 1.1, zIndex: 50, cursor: "grabbing" }}
-              className="glass-panel p-4 rounded-2xl aspect-square flex flex-col justify-end relative cursor-grab hover:border-purple-500/30 transition group"
-            >
-              {/* Fake visual representation of the clothing item */}
-              <div className={`absolute inset-4 rounded-xl opacity-80 ${item.color} group-hover:opacity-100 transition`} />
-              <p className="text-xs font-medium z-10 text-white drop-shadow-md">{item.name}</p>
-            </motion.div>
-          ))}
+        <div className="flex-1 overflow-y-auto pr-2 grid grid-cols-2 gap-4 pb-4 z-10">
+          <AnimatePresence>
+            {filteredInventory.map((item) => (
+              <motion.div
+                layout
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.9 }}
+                transition={{ duration: 0.3 }}
+                key={item.id}
+                drag
+                dragConstraints={canvasRef} // Allows dragging over to the right panel
+                dragElastic={0.1}
+                dragSnapToOrigin // Snaps back if dropped outside
+                whileDrag={{ scale: 1.1, zIndex: 50, cursor: "grabbing" }}
+                className="bg-[#050505] border border-white/5 p-4 rounded-[1.5rem] aspect-square flex flex-col justify-end relative cursor-grab hover:border-cyan-500/30 transition-colors group overflow-hidden"
+              >
+                {/* 3D-ish Base for Clothes */}
+                <div className={`absolute inset-4 rounded-xl opacity-80 ${item.color} group-hover:scale-105 transition-transform duration-500 shadow-inner`} />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent pointer-events-none" />
+                
+                <p className="font-sans text-[10px] uppercase tracking-widest font-semibold z-10 text-white truncate">{item.name}</p>
+                <p className="font-sans text-[9px] text-[#888888] z-10">{item.category}</p>
+              </motion.div>
+            ))}
+          </AnimatePresence>
+          {filteredInventory.length === 0 && (
+            <div className="col-span-2 h-full flex flex-col items-center justify-center text-[#555555]">
+               <Search size={32} className="mb-4 opacity-50" />
+               <p className="font-sans text-sm tracking-widest uppercase">No assets found</p>
+            </div>
+          )}
         </div>
       </motion.div>
 
-      {/* RIGHT PANEL: The Mixing Canvas */}
+      {/* =======================================================================
+          RIGHT PANEL: THE MIXING CANVAS
+          ======================================================================= */}
       <motion.div 
-        initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 }}
-        className="w-full md:w-2/3 glass-panel rounded-3xl p-6 relative overflow-hidden flex flex-col justify-between border border-dashed border-white/20 h-[80vh]"
+        ref={canvasRef}
+        initial={{ opacity: 0, x: 40 }} 
+        animate={{ opacity: 1, x: 0 }} 
+        transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+        className="w-full xl:w-2/3 glass-pill rounded-[2.5rem] p-8 relative overflow-hidden flex flex-col justify-between border border-white/5 h-[80vh]"
       >
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-96 border border-white/5 rounded-[40px] flex items-center justify-center pointer-events-none">
-          <p className="text-zinc-600 font-medium tracking-widest uppercase text-sm">Drag items here</p>
+        {/* Blueprint Grid Background */}
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:32px_32px]" />
+        
+        {/* Center Drop Zone Placeholder */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-[30rem] border-2 border-dashed border-white/10 rounded-[3rem] flex flex-col items-center justify-center pointer-events-none group">
+          <div className="w-full h-full absolute inset-0 bg-cyan-500/5 blur-[100px] rounded-[3rem] group-hover:bg-cyan-500/10 transition-colors" />
+          <Shirt size={48} className="text-white/10 mb-4" />
+          <p className="font-sans text-[#666666] font-semibold tracking-widest uppercase text-xs text-center px-8">
+            Drag assets here to synthesize outfit
+          </p>
         </div>
 
+        {/* Top Action Bar */}
         <div className="flex justify-between items-center z-10">
-          <h2 className="text-xl font-semibold">Outfit Builder</h2>
-          <button className="flex items-center gap-2 text-sm text-zinc-400 hover:text-white transition">
-            <RotateCcw size={14} /> Reset Canvas
+          <div>
+            <h2 className="font-serif text-3xl text-white">Canvas <span className="italic text-cyan-400">01</span></h2>
+          </div>
+          <button className="flex items-center gap-2 text-xs font-sans tracking-widest uppercase text-[#888888] hover:text-white transition-colors border border-white/10 px-4 py-2 rounded-full bg-white/5 backdrop-blur-md">
+            <RotateCcw size={14} /> Clear Board
           </button>
         </div>
 
-        <div className="flex justify-end z-10">
-          <button className="px-6 py-3 bg-gradient-to-r from-purple-500 to-cyan-500 text-white font-semibold rounded-full shadow-[0_0_20px_rgba(168,85,247,0.3)] hover:scale-105 transition">
-            Save Outfit
-          </button>
+        {/* Bottom Floating Action Bar */}
+        <div className="flex justify-end items-center z-10">
+          <div className="glass flex items-center gap-4 p-2 rounded-full border border-white/10 bg-[#0a0a0a]/80 backdrop-blur-xl shadow-[0_10px_40px_rgba(0,0,0,0.5)]">
+            <button className="w-12 h-12 flex items-center justify-center rounded-full text-[#888888] hover:text-white hover:bg-white/5 transition-colors">
+              <Download size={18} />
+            </button>
+            <div className="w-px h-8 bg-white/10" />
+            <button className="px-8 py-3 bg-white text-black font-sans text-sm font-bold tracking-widest uppercase rounded-full shadow-[0_0_20px_rgba(255,255,255,0.2)] hover:scale-105 transition-transform flex items-center gap-2">
+              <Sparkles size={16} className="text-purple-500" /> Synthesize
+            </button>
+          </div>
         </div>
       </motion.div>
 
-    </div>
+    </main>
   );
 }
