@@ -28,7 +28,7 @@ export default function RootLayout({ children }) {
       <body
         className="antialiased"
         style={{
-          fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif",
+          fontFamily: "'Playfair Display', serif",
           fontWeight: 400,
           background: "#050505",
           color: "#f0f0f0",
