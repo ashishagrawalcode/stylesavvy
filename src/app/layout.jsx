@@ -2,11 +2,11 @@ import "../styles/globals.css";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import Chatbot from "@/components/ui/Chatbot";
+import AuthProvider from "@/components/layout/AuthProvider"; // 👈 INJECT THE GUARD
 
 export const metadata = {
   title: "StyleSavvy — AI Personal Stylist",
-  description:
-    "Your digital wardrobe and intelligent fashion engine. Powered by AI.",
+  description: "Your digital wardrobe and intelligent fashion engine. Powered by AI.",
   openGraph: {
     title: "StyleSavvy — AI Personal Stylist",
     description: "Upload your wardrobe. Let our neural engine curate your fits.",
@@ -34,19 +34,22 @@ export default function RootLayout({ children }) {
           color: "#f0f0f0",
         }}
       >
-        {/* Persistent navbar */}
-        <Navbar />
+        {/* 🚨 THE SECURITY WRAPPER 🚨 */}
+        <AuthProvider>
+          {/* Persistent navbar */}
+          <Navbar />
 
-        {/* Page content — pt-28 clears the floating navbar */}
-        <main className="relative min-h-screen pt-28 pb-0">
-          {children}
-        </main>
+          {/* Page content — pt-28 clears the floating navbar */}
+          <main className="relative min-h-screen pt-28 pb-0">
+            {children}
+          </main>
 
-        {/* Footer on every page */}
-        <Footer />
+          {/* Footer on every page */}
+          <Footer />
 
-        {/* Floating AI chatbot */}
-        <Chatbot />
+          {/* Floating AI chatbot */}
+          <Chatbot />
+        </AuthProvider>
       </body>
     </html>
   );
