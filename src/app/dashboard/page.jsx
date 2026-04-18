@@ -92,7 +92,7 @@ export default function Dashboard() {
           width: "60vw",
           height: "40vh",
           background:
-            "radial-gradient(ellipse, rgba(155,89,255,0.07) 0%, transparent 70%)",
+            "radial-gradient(ellipse, rgba(155,89,255,0.03) 0%, transparent 70%)",
           filter: "blur(80px)",
         }}
       />
@@ -110,12 +110,12 @@ export default function Dashboard() {
             </p>
             <h1
               className="text-4xl md:text-5xl tracking-tight leading-none mb-3"
-              style={{ color: "#f0f0f0", fontWeight: 600 }}
+              style={{ color: "#ffffff", fontWeight: 700 }}
             >
               Your{" "}
               <span
                 style={{
-                  background: "linear-gradient(135deg, #c084fc 0%, #38bdf8 100%)",
+                  background: "linear-gradient(135deg, #ffffff 0%, #aaaaaa 100%)",
                   WebkitBackgroundClip: "text",
                   WebkitTextFillColor: "transparent",
                   backgroundClip: "text",
@@ -124,9 +124,9 @@ export default function Dashboard() {
                 Dashboard
               </span>
             </h1>
-            <p className="text-sm" style={{ color: "#555", fontWeight: 400 }}>
+            <p className="text-sm tracking-wide" style={{ color: "#666", fontWeight: 400 }}>
               Style geometry tuned to:{" "}
-              <span style={{ color: "#e0e0e0", fontWeight: 500 }}>
+              <span style={{ color: "#b0b0b0", fontWeight: 500 }}>
                 Athletic Build, Deep Winter
               </span>
             </p>
@@ -157,18 +157,18 @@ export default function Dashboard() {
               {...fadeScale(0.05 * i)}
               onMouseEnter={() => setHoveredStat(i)}
               onMouseLeave={() => setHoveredStat(null)}
-              className="relative rounded-2xl p-5 overflow-hidden cursor-default"
+              className="relative rounded-2xl p-5 overflow-hidden cursor-default group"
               style={{
-                background: "rgba(10,10,14,0.8)",
+                background: "linear-gradient(180deg, rgba(20,20,24,0.4) 0%, rgba(10,10,14,0.4) 100%)",
                 backdropFilter: "blur(20px)",
                 WebkitBackdropFilter: "blur(20px)",
                 border: hoveredStat === i
                   ? `1px solid ${stat.accent}33`
-                  : "1px solid rgba(255,255,255,0.07)",
+                  : "1px solid rgba(255,255,255,0.04)",
                 boxShadow: hoveredStat === i
-                  ? `0 0 30px ${stat.accent}15, inset 0 1px 0 rgba(255,255,255,0.05)`
-                  : "inset 0 1px 0 rgba(255,255,255,0.04)",
-                transition: "border-color 0.3s ease, box-shadow 0.3s ease",
+                  ? `0 0 30px ${stat.accent}15, inset 0 1px 0 rgba(255,255,255,0.03)`
+                  : "inset 0 1px 0 rgba(255,255,255,0.02)",
+                transition: "all 0.4s ease",
               }}
             >
               {/* subtle gradient overlay on hover */}
@@ -214,10 +214,10 @@ export default function Dashboard() {
           {...fadeUp(0.2)}
           className="flex items-center gap-4 rounded-2xl px-5 py-3.5 mb-8 overflow-x-auto scrollbar-hide"
           style={{
-            background: "rgba(10,10,14,0.7)",
+            background: "linear-gradient(90deg, rgba(20,20,24,0.3) 0%, rgba(10,10,14,0.3) 100%)",
             backdropFilter: "blur(20px)",
             WebkitBackdropFilter: "blur(20px)",
-            border: "1px solid rgba(255,255,255,0.06)",
+            border: "1px solid rgba(255,255,255,0.04)",
           }}
         >
           <span
@@ -358,11 +358,11 @@ export default function Dashboard() {
             <div
               className="rounded-2xl p-5 h-full"
               style={{
-                background: "rgba(10,10,14,0.8)",
+                background: "linear-gradient(180deg, rgba(20,20,24,0.4) 0%, rgba(10,10,14,0.4) 100%)",
                 backdropFilter: "blur(20px)",
                 WebkitBackdropFilter: "blur(20px)",
-                border: "1px solid rgba(255,255,255,0.07)",
-                boxShadow: "inset 0 1px 0 rgba(255,255,255,0.04)",
+                border: "1px solid rgba(255,255,255,0.04)",
+                boxShadow: "inset 0 1px 0 rgba(255,255,255,0.02)",
               }}
             >
               {/* Avatar */}

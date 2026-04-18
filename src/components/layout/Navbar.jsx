@@ -112,54 +112,19 @@ const navLinks = [
 /* ─────────────────────────────────────────
    LOGO
 ───────────────────────────────────────── */
+import StyleSavvyLogo from "../ui/StyleSavvyLogo";
+
 function Logo({ size = "default" }) {
   const isSmall = size === "small";
   return (
-    <Link href="/" className="flex items-center gap-2.5 group shrink-0">
+    <Link href="/" className="flex items-center group shrink-0">
       <motion.div
-        whileHover={{ scale: 1.08, rotate: 5 }}
-        whileTap={{ scale: 0.95 }}
-        className="relative flex items-center justify-center rounded-xl"
-        style={{
-          width: isSmall ? 28 : 34,
-          height: isSmall ? 28 : 34,
-          background: "linear-gradient(135deg, #9b59ff 0%, #06b6d4 100%)",
-          boxShadow: "0 0 18px rgba(155,89,255,0.45)",
-        }}
+        whileHover={{ scale: 1.02 }}
+        whileTap={{ scale: 0.98 }}
+        style={{ transformOrigin: "left center" }}
       >
-        {/* inner shimmer */}
-        <div
-          className="absolute inset-0 rounded-xl opacity-40"
-          style={{
-            background:
-              "linear-gradient(135deg, rgba(255,255,255,0.3) 0%, transparent 60%)",
-          }}
-        />
-        <Wand2 size={isSmall ? 13 : 16} color="#fff" strokeWidth={2} />
+        <StyleSavvyLogo scale={isSmall ? 0.45 : 0.55} />
       </motion.div>
-
-      <span
-        className="font-serif leading-none tracking-tight"
-        style={{
-          fontSize: isSmall ? 18 : 22,
-          color: "#ffffff",
-          fontWeight: 700,
-        }}
-      >
-        Style
-        <span
-          style={{
-            background: "linear-gradient(135deg, #a855f7, #06b6d4)",
-            WebkitBackgroundClip: "text",
-            WebkitTextFillColor: "transparent",
-            backgroundClip: "text",
-            fontStyle: "italic",
-            fontWeight: 300,
-          }}
-        >
-          Savvy
-        </span>
-      </span>
     </Link>
   );
 }
@@ -315,7 +280,7 @@ export default function Navbar() {
       >
         <motion.div
           animate={{
-            maxWidth: isScrolled ? 780 : 1280,
+            maxWidth: isScrolled ? 880 : 1280,
             paddingTop: isScrolled ? 10 : 14,
             paddingBottom: isScrolled ? 10 : 14,
             paddingLeft: isScrolled ? 20 : 0,
@@ -416,7 +381,7 @@ export default function Navbar() {
 
           {/* Auth + CTA buttons */}
           <div className="hidden md:flex items-center gap-2">
-            <Link
+            {/* <Link
               href="/login"
               className="flex items-center gap-1.5 px-4 py-2 rounded-full text-sm transition-all duration-200"
               style={{
@@ -436,12 +401,12 @@ export default function Navbar() {
             >
               <LogIn size={13} />
               Sign In
-            </Link>
+            </Link> */}
 
             <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
               <Link
                 href="/signup"
-                className="flex items-center gap-2 px-5 py-2 rounded-full text-sm"
+                className="flex items-center gap-2 px-5 py-2 rounded-full text-sm whitespace-nowrap"
                 style={{
                   background: "#ffffff",
                   color: "#000000",

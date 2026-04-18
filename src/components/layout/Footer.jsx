@@ -55,48 +55,18 @@ const stats = [
 /* ─────────────────────────────────────────
    LOGO — identical to Navbar
 ───────────────────────────────────────── */
+import StyleSavvyLogo from "../ui/StyleSavvyLogo";
+
 function FooterLogo() {
   return (
-    <Link href="/" className="flex items-center gap-2.5 group w-fit">
+    <Link href="/" className="flex items-center group w-fit">
       <motion.div
-        whileHover={{ scale: 1.08, rotate: 5 }}
-        whileTap={{ scale: 0.95 }}
-        className="relative flex items-center justify-center rounded-xl"
-        style={{
-          width: 34,
-          height: 34,
-          background: "linear-gradient(135deg, #9b59ff 0%, #06b6d4 100%)",
-          boxShadow: "0 0 18px rgba(155,89,255,0.45)",
-          flexShrink: 0,
-        }}
+        whileHover={{ scale: 1.02 }}
+        whileTap={{ scale: 0.98 }}
+        style={{ transformOrigin: "left center" }}
       >
-        <div
-          className="absolute inset-0 rounded-xl opacity-40"
-          style={{
-            background: "linear-gradient(135deg, rgba(255,255,255,0.3) 0%, transparent 60%)",
-          }}
-        />
-        <Wand2 size={16} color="#fff" strokeWidth={2} />
+        <StyleSavvyLogo scale={0.6} />
       </motion.div>
-
-      <span
-        className="font-serif leading-none tracking-tight"
-        style={{ fontSize: 22, color: "#ffffff", fontWeight: 700 }}
-      >
-        Style
-        <span
-          style={{
-            background: "linear-gradient(135deg, #a855f7, #06b6d4)",
-            WebkitBackgroundClip: "text",
-            WebkitTextFillColor: "transparent",
-            backgroundClip: "text",
-            fontStyle: "italic",
-            fontWeight: 300,
-          }}
-        >
-          Savvy
-        </span>
-      </span>
     </Link>
   );
 }

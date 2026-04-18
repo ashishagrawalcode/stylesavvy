@@ -15,6 +15,12 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 import * as THREE from "three";
 
+import { db } from "../../lib/firebase";
+import { doc, setDoc, onSnapshot, collection, query, orderBy, addDoc, serverTimestamp, updateDoc } from "firebase/firestore";
+import { useStyleStore } from "../../lib/store";
+import StyleSavvyLogo from "../../components/ui/StyleSavvyLogo";
+import RoomLobby from "../../components/ui/RoomLobby";
+
 /* ═══════════════════════════════════════════════════════════════
    DESIGN TOKENS
 ═══════════════════════════════════════════════════════════════ */
@@ -455,9 +461,8 @@ function WardrobePanel({ myItems, onToggle, onClose }) {
       exit={{ x: -360, opacity: 0 }}
       transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
       style={{
-        position: "absolute", left: 16, top: "50%", transform: "translateY(-50%)",
-        zIndex: 30, width: 300, maxHeight: "80vh",
-        display: "flex", flexDirection: "column",
+        position: "absolute", left: 16, top: 80, bottom: 80,
+        zIndex: 30, width: 300, display: "flex", flexDirection: "column",
         background: TOKEN.bgPanel,
         backdropFilter: "blur(32px)", WebkitBackdropFilter: "blur(32px)",
         border: `1px solid ${TOKEN.border}`,
@@ -466,8 +471,8 @@ function WardrobePanel({ myItems, onToggle, onClose }) {
         fontFamily: TOKEN.fontBody,
       }}
     >
-      {/* Gold top accent */}
-      <div style={{ position: "absolute", top: 0, left: 40, right: 40, height: 1, background: "linear-gradient(90deg, transparent, rgba(201,168,76,0.6), transparent)", borderRadius: "0 0 2px 2px" }} />
+      {/* Cyan top accent */}
+      <div style={{ position: "absolute", top: 0, left: 40, right: 40, height: 1, background: "linear-gradient(90deg, transparent, rgba(14,165,233,0.6), transparent)", borderRadius: "0 0 2px 2px" }} />
 
       {/* Header */}
       <div style={{ padding: "18px 18px 14px", borderBottom: `1px solid ${TOKEN.border}`, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
@@ -484,7 +489,7 @@ function WardrobePanel({ myItems, onToggle, onClose }) {
           <button key={c} onClick={() => setCat(c)} style={{
             flexShrink: 0, padding: "5px 12px", borderRadius: 999, fontSize: 11,
             fontFamily: TOKEN.fontBody, cursor: "pointer", transition: "all 0.2s",
-            background: cat === c ? TOKEN.gold : "rgba(255,255,255,0.04)",
+            background: cat === c ? TOKEN.cyan : "rgba(255,255,255,0.04)",
             color: cat === c ? "#09090f" : TOKEN.textMuted,
             border: cat === c ? "none" : `1px solid ${TOKEN.border}`,
             fontWeight: cat === c ? 600 : 400,
@@ -508,8 +513,8 @@ function WardrobePanel({ myItems, onToggle, onClose }) {
                 style={{
                   width: "100%", display: "flex", alignItems: "center", gap: 12,
                   padding: "10px 12px", borderRadius: 14, marginBottom: 4,
-                  background: active ? "rgba(201,168,76,0.1)" : "rgba(255,255,255,0.02)",
-                  border: active ? `1px solid rgba(201,168,76,0.3)` : `1px solid ${TOKEN.border}`,
+                  background: active ? "rgba(14,165,233,0.1)" : "rgba(255,255,255,0.02)",
+                  border: active ? `1px solid rgba(14,165,233,0.3)` : `1px solid ${TOKEN.border}`,
                   cursor: "pointer", textAlign: "left", transition: "all 0.2s",
                   fontFamily: TOKEN.fontBody,
                 }}
@@ -537,7 +542,7 @@ function WardrobePanel({ myItems, onToggle, onClose }) {
                     <span style={{ fontSize: 10, padding: "1px 7px", borderRadius: 999, background: `${item.accent}18`, color: item.accent }}>{item.tag}</span>
                   </div>
                 </div>
-                <span style={{ fontSize: 10, color: active ? TOKEN.gold : TOKEN.textDim, flexShrink: 0 }}>›</span>
+                <span style={{ fontSize: 10, color: active ? TOKEN.cyan : TOKEN.textDim, flexShrink: 0 }}>›</span>
               </motion.button>
             );
           })}
@@ -550,7 +555,7 @@ function WardrobePanel({ myItems, onToggle, onClose }) {
 /* ═══════════════════════════════════════════════════════════════
    USER ROSTER PANEL (right side)
 ═══════════════════════════════════════════════════════════════ */
-function RosterPanel({ users, myId, onVote, onViewUser, viewingUser }) {
+function RosterPanel({ users, myId, onVote, onViewUser, viewingUser, roomCode }) {
   const others = users.filter(u => u.id !== myId);
   const me = users.find(u => u.id === myId);
 
@@ -571,7 +576,7 @@ function RosterPanel({ users, myId, onVote, onViewUser, viewingUser }) {
           <motion.div animate={{ opacity: [1, 0.3, 1] }} transition={{ repeat: Infinity, duration: 2 }}
             style={{ width: 7, height: 7, borderRadius: "50%", background: TOKEN.emerald, boxShadow: `0 0 8px ${TOKEN.emerald}` }} />
           <span style={{ fontSize: 10, letterSpacing: "0.18em", color: TOKEN.textMuted, textTransform: "uppercase" }}>Live Room</span>
-          <span style={{ marginLeft: "auto", fontSize: 10, color: TOKEN.textDim, fontFamily: TOKEN.fontMono }}>#{Math.floor(Math.random() * 9000 + 1000)}</span>
+          <span style={{ marginLeft: "auto", fontSize: 11, color: TOKEN.text, fontWeight: 600, fontFamily: TOKEN.fontMono }}>#{roomCode || "----"}</span>
         </div>
         <div style={{ display: "flex", gap: -6 }}>
           {users.map((u, i) => (
@@ -1032,9 +1037,9 @@ function LoadingScreen({ onDone }) {
       <div style={{ position: "absolute", width: 280, height: 280, borderRadius: "50%", border: "1px solid rgba(124,58,237,0.07)", animation: "spinR 15s linear infinite" }} />
 
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} style={{ textAlign: "center" }}>
-        <div style={{ fontSize: 11, letterSpacing: "0.35em", color: TOKEN.textDim, textTransform: "uppercase", marginBottom: 18 }}>Styling Platform</div>
-        <div style={{ fontSize: 48, fontFamily: TOKEN.fontDisplay, color: TOKEN.text, fontWeight: 400, letterSpacing: "-0.01em", lineHeight: 1, marginBottom: 6 }}>
-          Style<span style={{ color: TOKEN.gold, fontStyle: "italic", fontWeight: 300 }}>Space</span>
+        <div style={{ fontSize: 11, letterSpacing: "0.35em", color: TOKEN.textDim, textTransform: "uppercase", marginBottom: 24 }}>Styling Platform</div>
+        <div style={{ display: "flex", justifyContent: "center", marginBottom: 24 }}>
+          <StyleSavvyLogo scale={1.2} />
         </div>
         <div style={{ fontSize: 12, color: TOKEN.textDim, letterSpacing: "0.15em", marginBottom: 48 }}>LIVE COLLABORATION ROOM</div>
 
@@ -1072,11 +1077,8 @@ function TopBar({ users, onShowChat, chatOpen, onShowInsight, showingInsight, on
       }}
     >
       {/* Logo */}
-      <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "8px 16px", borderRadius: 999, background: "rgba(9,9,15,0.9)", border: `1px solid ${TOKEN.border}`, backdropFilter: "blur(20px)" }}>
-        <div style={{ width: 6, height: 6, borderRadius: "50%", background: TOKEN.gold, boxShadow: `0 0 8px ${TOKEN.gold}` }} />
-        <span style={{ fontSize: 15, fontFamily: TOKEN.fontDisplay, color: TOKEN.text, fontWeight: 600 }}>
-          Style<span style={{ color: TOKEN.gold, fontStyle: "italic", fontWeight: 300 }}>Space</span>
-        </span>
+      <div style={{ display: "flex", alignItems: "center", padding: "4px 16px 4px 8px", borderRadius: 999, background: "rgba(9,9,15,0.9)", border: `1px solid ${TOKEN.border}`, backdropFilter: "blur(20px)" }}>
+        <StyleSavvyLogo scale={0.5} />
       </div>
 
       {/* Session info */}
@@ -1299,20 +1301,24 @@ function MyLookHUD({ items, analysis }) {
 /* ═══════════════════════════════════════════════════════════════
    MAIN APP
 ═══════════════════════════════════════════════════════════════ */
-export default function StyleSpace() {
+export default function StyleSavvyRoom() {
+  const { user: authUser } = useStyleStore();
+  const myId = authUser?.uid || "me";
+  const [roomCode, setRoomCode] = useState(null);
+  
   const [loaded, setLoaded] = useState(false);
-  const [users, setUsers] = useState(INITIAL_USERS);
+  const [users, setUsers] = useState([]);
   const [lighting, setLighting] = useState("city");
   const [showWardrobe, setShowWardrobe] = useState(true);
   const [showChat, setShowChat] = useState(false);
   const [viewingUser, setViewingUser] = useState(null);
-  const [aiPanel, setAiPanel] = useState(null); // { analysis, loading }
+  const [aiPanel, setAiPanel] = useState(null);
   const [aiAnalysing, setAiAnalysing] = useState(false);
   const [roomInsight, setRoomInsight] = useState(null);
   const [insightLoading, setInsightLoading] = useState(false);
   const [showInsight, setShowInsight] = useState(false);
   const [toast, setToast] = useState({ msg: "", visible: false });
-  const [chatMessages, setChatMessages] = useState(CHAT_SEED);
+  const [chatMessages, setChatMessages] = useState([]);
   const toastTimer = useRef();
 
   const showToast = useCallback((msg) => {
@@ -1321,118 +1327,165 @@ export default function StyleSpace() {
     toastTimer.current = setTimeout(() => setToast(t => ({ ...t, visible: false })), 2600);
   }, []);
 
-  const me = useMemo(() => users.find(u => u.id === "me"), [users]);
+  // Room Connection & Initialization
+  useEffect(() => {
+    if (!roomCode || !authUser) return;
+    
+    // Set my initial participant doc
+    const myRef = doc(db, "rooms", roomCode, "participants", myId);
+    
+    const colorOptions = ["#7c3aed", "#0ea5e9", "#10b981", "#c9a84c", "#f43f5e", "#f59e0b"];
+    const myColor = colorOptions[Math.floor(Math.random() * colorOptions.length)];
+    const myName = authUser.displayName || authUser.email?.split("@")[0] || "Stylist";
+    const myAvatar = myName.slice(0, 2).toUpperCase();
+
+    setDoc(myRef, {
+      id: myId,
+      name: myName,
+      avatar: myAvatar,
+      color: myColor,
+      items: [],
+      votes: {},
+      aiScore: null,
+      aiAnalysis: null,
+      isTyping: false
+    }, { merge: true });
+
+    // Listen to participants
+    const unsubParticipants = onSnapshot(collection(db, "rooms", roomCode, "participants"), (snap) => {
+      const liveUsers = snap.docs.map(doc => doc.data());
+      setUsers(liveUsers);
+    });
+
+    // Listen to messages
+    const q = query(collection(db, "rooms", roomCode, "messages"), orderBy("createdAt", "asc"));
+    const unsubMessages = onSnapshot(q, (snap) => {
+      const msgs = snap.docs.map(doc => doc.data());
+      setChatMessages(msgs);
+    });
+
+    return () => {
+      unsubParticipants();
+      unsubMessages();
+    };
+  }, [roomCode, authUser, myId]);
+
+  const me = useMemo(() => users.find(u => u.id === myId) || { id: myId, items: [], votes: {} }, [users, myId]);
   const myItemIds = me?.items || [];
   const myItems = myItemIds.map(id => WARDROBE.find(w => w.id === id)).filter(Boolean);
 
-  // Resolve active 3D colors for MY mannequin
   const topItem = myItems.find(i => i.cat === "Tops");
   const botItem = myItems.find(i => i.cat === "Bottoms");
   const shoItem = myItems.find(i => i.cat === "Shoes");
 
   const toggleItem = useCallback((item) => {
-    setUsers(prev => prev.map(u => {
-      if (u.id !== "me") return u;
-      const exists = u.items.includes(item.id);
-      if (exists) return { ...u, items: u.items.filter(id => id !== item.id) };
-      const filtered = u.items.filter(id => {
+    if (!roomCode) return;
+    const myRef = doc(db, "rooms", roomCode, "participants", myId);
+    const exists = myItemIds.includes(item.id);
+    let newItems = [];
+    if (exists) {
+      newItems = myItemIds.filter(id => id !== item.id);
+    } else {
+      const filtered = myItemIds.filter(id => {
         const w = WARDROBE.find(w => w.id === id);
         return w?.cat !== item.cat;
       });
-      return { ...u, items: [...filtered, item.id] };
-    }));
-  }, []);
+      newItems = [...filtered, item.id];
+    }
+    updateDoc(myRef, { items: newItems });
+  }, [roomCode, myId, myItemIds]);
 
   const handleVote = useCallback((targetId, val) => {
-    setUsers(prev => prev.map(u => {
-      if (u.id !== "me") return u;
-      const currentVote = u.votes[targetId];
-      const newVotes = { ...u.votes };
-      if (currentVote === val) delete newVotes[targetId];
-      else newVotes[targetId] = val;
-      return { ...u, votes: newVotes };
-    }));
+    if (!roomCode) return;
+    const myRef = doc(db, "rooms", roomCode, "participants", myId);
+    const currentVote = me.votes?.[targetId];
+    const newVotes = { ...(me.votes || {}) };
+    if (currentVote === val) delete newVotes[targetId];
+    else newVotes[targetId] = val;
+    
+    updateDoc(myRef, { votes: newVotes });
     showToast(val === 1 ? "Upvoted this look" : "Downvoted this look");
-  }, [showToast]);
+  }, [roomCode, myId, me.votes, showToast]);
 
   const handleAnalyseMe = useCallback(async () => {
     if (!myItems.length) { showToast("Select some items first"); return; }
+    if (!roomCode) return;
     setAiAnalysing(true);
     setAiPanel({ analysis: null, loading: true });
-    const result = await analyseOutfit(myItems);
-    setUsers(prev => prev.map(u => u.id === "me" ? { ...u, aiScore: result.score, aiAnalysis: result } : u));
+    
+    const myRef = doc(db, "rooms", roomCode, "participants", myId);
+    updateDoc(myRef, { isAnalysing: true });
+    
+    let result;
+    try {
+      const res = await fetch("/api/analyze", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ items: myItems }),
+      });
+      if (!res.ok) throw new Error("API Failed");
+      const data = await res.json();
+      result = JSON.parse((data.result || "{}").replace(/```json|```/g, "").trim());
+    } catch (e) {
+      const score = Math.min(98, 50 + myItems.length * 6);
+      result = { score, headline: "Styling Complete", analysis: "Room to explore.", aesthetic: "Minimal", tags: [] };
+    }
+
+    updateDoc(myRef, { aiScore: result.score, aiAnalysis: result, isAnalysing: false });
     setAiPanel({ analysis: result, loading: false });
     setAiAnalysing(false);
     showToast("AI analysis complete");
-  }, [myItems, showToast]);
+  }, [myItems, showToast, roomCode, myId]);
 
   const handleAnalyseUser = useCallback(async (uid) => {
-  const user = users.find(u => u.id === uid);
-  if (!user) return;
+    const user = users.find(u => u.id === uid);
+    if (!user || !roomCode) return;
+    const items = user.items.map(id => WARDROBE.find(w => w.id === id)).filter(Boolean);
+    if (!items.length) return;
 
-  const items = user.items.map(id => WARDROBE.find(w => w.id === id)).filter(Boolean);
-  if (!items.length) return;
-
-  // 1. Set the user to "Analyzing" state
-  setUsers(prev => prev.map(u => u.id === uid ? { ...u, isAnalysing: true } : u));
-
-  try {
-    // 2. Call your new backend route and pass the items as the payload
-    const res = await fetch('/api/analyze', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ items: items }) // Actually sending the items to OpenAI
-    });
+    const targetRef = doc(db, "rooms", roomCode, "participants", uid);
+    updateDoc(targetRef, { isAnalysing: true });
 
     let result;
-    if (!res.ok) {
-      console.warn("API error, using fallback.");
-      throw new Error("API failed");
-    } else {
+    try {
+      const res = await fetch('/api/analyze', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ items: items })
+      });
+      if (!res.ok) throw new Error("API failed");
       const data = await res.json();
-      const raw = data.result || "{}";
-      const clean = raw.replace(/```json|```/g, "").trim();
-      result = JSON.parse(clean);
+      result = JSON.parse((data.result || "{}").replace(/```json|```/g, "").trim());
+    } catch (error) {
+      showToast(`Fallback analysis used for ${user.name}`);
+      const score = Math.min(98, 50 + items.length * 6);
+      result = { score, headline: "Styling Complete", analysis: "Room to explore.", aesthetic: "Minimal", tags: [] };
     }
-
-    // 4. Update the user state with the real AI results and turn off the loading state
-    setUsers(prev => prev.map(u => u.id === uid ? { 
-      ...u, 
-      aiScore: result.score,
-      aiAnalysis: result, 
-      isAnalysing: false 
-    } : u));
-
-    showToast(`Analysis complete for ${user.name}`);
-
-  } catch (error) {
-    console.error("Analysis failed:", error);
-    showToast(`Fallback analysis used for ${user.name}`);
     
-    // Fallback logic
-    const cats = [...new Set(items.map(i => i.cat))];
-    const score = Math.min(98, 50 + items.length * 6 + cats.length * 4);
-    const fallbackResult = {
-      score,
-      headline: "A considered edit with room to explore",
-      analysis: "The outfit shows intentionality in its selection. The pieces have compatible tonal ranges and the silhouette reads as cohesive. Some styling tension remains in the category balance.",
-      strengths: ["Tonal coherence", "Proportional balance"],
-      tension: "Could push further in a singular direction",
-      aesthetic: "Considered Minimal",
-      tags: items.slice(0,3).map(i => i.tag),
-    };
+    updateDoc(targetRef, { aiScore: result.score, aiAnalysis: result, isAnalysing: false });
+    showToast(`Analysis complete for ${user.name}`);
+  }, [users, showToast, roomCode]);
 
-    setUsers(prev => prev.map(u => u.id === uid ? { 
-      ...u, 
-      aiScore: fallbackResult.score,
-      aiAnalysis: fallbackResult, 
-      isAnalysing: false 
-    } : u));
-  }
-}, [users, showToast]);
   const handleRoomInsight = useCallback(async () => {
     setInsightLoading(true);
-    const result = await generateRoomInsight(users);
+    let result;
+    try {
+      const outfits = users.filter(u => u.items.length > 0).map(u => {
+        const userItems = u.items.map(id => WARDROBE.find(w => w.id === id)).filter(Boolean);
+        return `${u.name}: ${userItems.map(i => i.name).join(", ")}`;
+      }).join("\n");
+      
+      const res = await fetch("/api/insight", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ outfits }),
+      });
+      if (!res.ok) throw new Error("API Error");
+      const data = await res.json();
+      result = JSON.parse((data.result || "{}").replace(/```json|```/g, "").trim());
+    } catch(e) {
+      result = { roomTheme: "Creative Tension", observation: "Diverse styles in play.", standout: "Waiting for analysis" };
+    }
     setRoomInsight(result);
     setShowInsight(true);
     setInsightLoading(false);
@@ -1440,52 +1493,32 @@ export default function StyleSpace() {
   }, [users, showToast]);
 
   const sendChat = useCallback((text) => {
-    setChatMessages(prev => [...prev, { uid: "me", text, ts: "just now" }]);
-    // Simulate response after 3-6s
-    const responders = users.filter(u => u.id !== "me");
-    if (responders.length && Math.random() > 0.4) {
-      const responder = responders[Math.floor(Math.random() * responders.length)];
-      const responses = [
-        "Love the direction you're taking!",
-        "That combination is really strong.",
-        "Interesting mix — very editorial.",
-        "I'm going a completely different route haha",
-        "Those pieces work really well together",
-        "Can't wait to see the AI score on that",
-      ];
-      setTimeout(() => {
-        setChatMessages(prev => [...prev, {
-          uid: responder.id,
-          text: responses[Math.floor(Math.random() * responses.length)],
-          ts: "just now",
-        }]);
-      }, 2000 + Math.random() * 3000);
-    }
-  }, [users]);
+    if (!roomCode || !authUser) return;
+    addDoc(collection(db, "rooms", roomCode, "messages"), {
+      uid: myId,
+      text,
+      ts: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      createdAt: serverTimestamp()
+    });
+  }, [roomCode, authUser, myId]);
 
   const handleReset = useCallback(() => {
-    setUsers(prev => prev.map(u => u.id === "me" ? { ...u, items: [], aiScore: null, aiAnalysis: null } : u));
+    if (!roomCode) return;
+    const myRef = doc(db, "rooms", roomCode, "participants", myId);
+    updateDoc(myRef, { items: [], aiScore: null, aiAnalysis: null });
     setAiPanel(null);
     setLighting("city");
     showToast("Look reset");
-  }, [showToast]);
-
-  // Simulate other users occasionally updating typing status
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const otherIds = ["u1", "u2", "u3"];
-      const uid = otherIds[Math.floor(Math.random() * otherIds.length)];
-      setUsers(prev => prev.map(u => u.id === uid ? { ...u, isTyping: true } : u));
-      setTimeout(() => setUsers(prev => prev.map(u => u.id === uid ? { ...u, isTyping: false } : u)), 2500);
-    }, 8000);
-    return () => clearInterval(interval);
-  }, []);
-
+  }, [roomCode, myId, showToast]);
 
   const viewedUser = viewingUser ? users.find(u => u.id === viewingUser) : null;
 
+  if (!roomCode) {
+    return <RoomLobby onJoinRoom={(code) => setRoomCode(code)} />;
+  }
+
   return (
-    <div style={{ position: "relative", width: "100%", height: "100vh", background: TOKEN.bg, overflow: "hidden", fontFamily: TOKEN.fontBody }}>
+    <div style={{ position: "relative", width: "100%", height: "calc(100vh - 112px)", background: TOKEN.bg, overflow: "hidden", fontFamily: TOKEN.fontBody }}>
       {/* Loading */}
       <AnimatePresence>{!loaded && <LoadingScreen onDone={() => setLoaded(true)} />}</AnimatePresence>
 
@@ -1535,7 +1568,8 @@ export default function StyleSpace() {
       {loaded && (
         <RosterPanel
           users={users}
-          myId="me"
+          myId={myId}
+          roomCode={roomCode}
           onVote={handleVote}
           onViewUser={id => setViewingUser(id === viewingUser ? null : id)}
           viewingUser={viewingUser}

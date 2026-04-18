@@ -28,7 +28,7 @@ export default function RootLayout({ children }) {
       <body
         className="antialiased"
         style={{
-          fontFamily: "'Playfair Display', serif",
+          fontFamily: "'Inter', -apple-system, sans-serif",
           fontWeight: 400,
           background: "#050505",
           color: "#f0f0f0",

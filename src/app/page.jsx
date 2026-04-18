@@ -10,6 +10,7 @@ import {
   Fingerprint, Activity, ChevronRight, Star, Plus, Check, Play, 
   Globe, MessageCircle, Share2, Mail, Quote 
 } from "lucide-react";
+import StyleSavvyLogo from "../components/ui/StyleSavvyLogo";
 
 // ============================================================================
 // DATA STRUCTURES
@@ -176,8 +177,8 @@ export default function Home() {
 
       {/* Deep Ambient Backgrounds */}
       <motion.div style={{ y: bgY }} className="fixed inset-0 pointer-events-none z-0">
-        <div className="absolute top-[-10%] left-1/4 w-[50vw] h-[50vh] bg-purple-900/15 blur-[150px] rounded-full mix-blend-screen" />
-        <div className="absolute top-[30%] right-1/4 w-[40vw] h-[40vh] bg-cyan-900/10 blur-[150px] rounded-full mix-blend-screen" />
+        <div className="absolute top-[-10%] left-1/4 w-[50vw] h-[50vh] bg-purple-900/5 blur-[150px] rounded-full mix-blend-screen" />
+        <div className="absolute top-[30%] right-1/4 w-[40vw] h-[40vh] bg-cyan-900/5 blur-[150px] rounded-full mix-blend-screen" />
       </motion.div>
       <div className="fixed inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.03] pointer-events-none z-0" />
 
@@ -186,14 +187,14 @@ export default function Home() {
           ======================================================================= */}
       <motion.section 
         style={{ opacity: heroOpacity, scale: heroScale }}
-        className="relative w-full min-h-screen flex flex-col items-center justify-center pt-32 pb-24 px-6 z-10"
+        className="relative w-full min-h-[90vh] flex flex-col items-center justify-center px-6 pt-16 pb-10 z-10"
       >
         <div className="max-w-6xl mx-auto flex flex-col items-center text-center w-full">
           
-          <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1 }} className="mb-10">
+          <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1 }} className="mb-6">
             <div className="relative group cursor-pointer interactive">
-              <div className="absolute inset-0 bg-gradient-to-r from-purple-500/20 to-cyan-500/20 rounded-full blur-md group-hover:blur-xl transition-all duration-700" />
-              <span className="relative text-[10px] sm:text-xs tracking-[0.3em] text-[#e2e2e2] uppercase border border-white/10 px-8 py-3 rounded-full bg-black/50 backdrop-blur-xl inline-flex items-center gap-3">
+              <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-cyan-500/10 rounded-full blur-md group-hover:blur-xl transition-all duration-700" />
+              <span className="relative text-[10px] sm:text-xs tracking-[0.3em] text-[#e2e2e2] uppercase border border-white/10 px-6 py-2.5 rounded-full bg-black/50 backdrop-blur-xl inline-flex items-center gap-3">
                 <span className="flex h-2 w-2 relative">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-500"></span>
@@ -203,26 +204,26 @@ export default function Home() {
             </div>
           </motion.div>
           
-          <motion.h1 initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1.2, delay: 0.2 }} className="font-serif text-6xl sm:text-8xl lg:text-[130px] font-normal tracking-tighter leading-[0.85] mb-8 text-white">
-            Intelligence in <br />
-            <span className="italic relative inline-block">
-              <span className="relative bg-gradient-to-b from-white via-[#e2e2e2] to-[#444444] bg-clip-text text-transparent drop-shadow-2xl">
+          <motion.h1 initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1.0, delay: 0.1, ease: [0.16, 1, 0.3, 1] }} className="font-sans text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight leading-[1.05] mb-5 text-white max-w-4xl mx-auto">
+            Intelligence in <br className="hidden sm:block" />
+            <span className="relative inline-block">
+              <span className="relative bg-gradient-to-r from-white via-[#e2e2e2] to-[#888888] bg-clip-text text-transparent drop-shadow-md">
                 Every Thread.
               </span>
             </span>
           </motion.h1>
           
-          <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1, delay: 0.6 }} className="text-lg sm:text-xl text-[#888888] mb-14 max-w-2xl font-light leading-relaxed">
+          <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1.0, delay: 0.3, ease: [0.16, 1, 0.3, 1] }} className="text-base sm:text-lg text-[#888888] mb-8 max-w-xl font-light leading-relaxed">
             The era of static fashion is over. Digitize your physical wardrobe, enter the immersive 3D Roomspace, and let our neural engine curate fits mathematically scaled to your exact geometry.
           </motion.p>
 
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, delay: 0.8 }} className="flex flex-col sm:flex-row items-center gap-6 w-full sm:w-auto">
-            <MagneticButton className="w-full sm:w-auto interactive group relative inline-flex items-center justify-center gap-3 px-10 py-5 bg-white text-black rounded-full text-sm font-semibold tracking-widest uppercase overflow-hidden shadow-[0_0_40px_rgba(255,255,255,0.15)]">
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, delay: 0.8 }} className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
+            <MagneticButton className="w-full sm:w-auto interactive group relative inline-flex items-center justify-center gap-3 px-8 py-4 bg-white text-black rounded-full text-sm font-semibold tracking-widest uppercase overflow-hidden shadow-[0_0_30px_rgba(255,255,255,0.1)]">
               <div className="absolute inset-0 bg-gradient-to-r from-white via-gray-300 to-white translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 ease-in-out" />
               <Link href="/stylist" className="relative z-10 flex items-center gap-2">Initialize Profile <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" /></Link>
             </MagneticButton>
             
-            <Link href="/roomspace" className="w-full interactive sm:w-auto group flex items-center justify-center gap-3 px-10 py-5 bg-transparent text-white border border-white/20 rounded-full text-sm font-semibold tracking-widest uppercase hover:bg-white/5 transition-all duration-300 backdrop-blur-sm">
+            <Link href="/roomspace" className="w-full interactive sm:w-auto group flex items-center justify-center gap-3 px-8 py-4 bg-transparent text-white border border-white/20 rounded-full text-sm font-semibold tracking-widest uppercase hover:bg-white/5 transition-all duration-300 backdrop-blur-sm">
               <Play size={14} className="text-cyan-400 group-hover:scale-110 transition-transform" /> 
               Watch Demo
             </Link>
@@ -239,7 +240,7 @@ export default function Home() {
           {[...Array(2)].map((_, idx) => (
             <div key={idx} className="flex items-center justify-around w-1/2 min-w-max px-8 gap-20">
               {BRANDS.map((brand, i) => (
-                <span key={i} className="font-serif text-4xl tracking-widest text-[#555555] uppercase">{brand}</span>
+                <span key={i} className="font-sans font-bold text-3xl tracking-[0.2em] text-[#555555] uppercase">{brand}</span>
               ))}
             </div>
           ))}
@@ -252,8 +253,8 @@ export default function Home() {
       <section className="w-full max-w-7xl mx-auto px-6 py-40 z-10 relative">
         <motion.div initial={{ opacity: 0, y: 50 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-100px" }} transition={{ duration: 1 }} className="mb-20">
           <span className="text-[10px] tracking-[0.2em] text-[#888888] border border-white/10 px-4 py-2 rounded-full uppercase mb-6 inline-block">System Architecture</span>
-          <h2 className="font-serif text-5xl md:text-7xl font-normal text-white leading-tight">
-            A Unified <span className="italic bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent">Ecosystem.</span>
+          <h2 className="font-sans text-5xl md:text-6xl font-bold tracking-tight text-white leading-tight">
+            A Unified <span className="bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent">Ecosystem.</span>
           </h2>
         </motion.div>
 
@@ -264,7 +265,7 @@ export default function Home() {
               className={`${feat.colSpan} bg-gradient-to-br from-[#0a0a0a] to-[#050505] border border-white/5 hover:border-white/20 rounded-[2.5rem] p-10 relative overflow-hidden group transition-all duration-500 interactive flex flex-col justify-between`}
             >
               {/* Dynamic Hover Glow */}
-              <div className={`absolute -top-32 -right-32 w-96 h-96 bg-${feat.color}-500/10 blur-[100px] rounded-full group-hover:bg-${feat.color}-500/20 transition-all duration-700 pointer-events-none`} />
+              <div className={`absolute -top-32 -right-32 w-96 h-96 bg-${feat.color}-500/5 blur-[100px] rounded-full group-hover:bg-${feat.color}-500/10 transition-all duration-700 pointer-events-none`} />
               
               <div className="relative z-10 flex justify-between items-start">
                 <feat.icon size={36} className={`text-${feat.color}-400`} />
@@ -272,7 +273,7 @@ export default function Home() {
               </div>
 
               <div className="relative z-10 mt-auto">
-                <h3 className="font-serif text-4xl text-white mb-4">{feat.title}</h3>
+                <h3 className="font-sans text-3xl font-semibold tracking-tight text-white mb-4">{feat.title}</h3>
                 <p className="text-[#888888] text-base leading-relaxed max-w-sm mb-6">{feat.desc}</p>
                 <div className="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center group-hover:bg-white group-hover:text-black transition-colors duration-300">
                    <ArrowRight size={16} className="-rotate-45 group-hover:rotate-0 transition-transform duration-300" />
@@ -292,7 +293,7 @@ export default function Home() {
           {/* Sticky Left Content */}
           <div className="w-full lg:w-1/3 lg:sticky lg:top-40 h-fit">
              <Fingerprint size={48} className="text-[#333333] mb-8" />
-             <h2 className="font-serif text-5xl md:text-6xl text-white mb-6">The Logic.</h2>
+             <h2 className="font-sans text-5xl md:text-6xl font-bold tracking-tight text-white mb-6">The Logic.</h2>
              <p className="text-[#888888] text-lg leading-relaxed mb-8">Three operational phases to completely overhaul and digitize your personal aesthetic.</p>
              <Link href="/about" className="inline-flex items-center gap-2 text-sm tracking-widest uppercase text-white hover:text-cyan-400 transition-colors border-b border-white/20 pb-1">Read the Whitepaper <ArrowRight size={14} /></Link>
           </div>
@@ -306,10 +307,10 @@ export default function Home() {
                 >
                   <div className="w-24 h-24 shrink-0 rounded-full border border-white/10 flex items-center justify-center bg-black relative shadow-[0_0_30px_rgba(255,255,255,0.02)] group-hover:border-cyan-500/50 transition-colors duration-500">
                     <span className="absolute -top-2 -left-2 text-[10px] font-bold text-cyan-400 bg-black px-2 py-1 rounded border border-white/10">{item.step}</span>
-                    <span className="font-serif text-3xl text-white italic">{i + 1}</span>
+                    <span className="font-sans font-bold text-3xl text-white">{i + 1}</span>
                   </div>
                   <div className="pt-2">
-                    <h3 className="font-serif text-4xl text-white mb-4">{item.title}</h3>
+                    <h3 className="font-sans text-3xl font-semibold tracking-tight text-white mb-4">{item.title}</h3>
                     <p className="text-[#888888] text-lg leading-relaxed max-w-lg">{item.desc}</p>
                   </div>
                 </motion.div>
@@ -323,7 +324,7 @@ export default function Home() {
           ======================================================================= */}
       <section className="w-full max-w-7xl mx-auto px-6 py-40 z-10 relative">
         <div className="text-center mb-20">
-          <h2 className="font-serif text-5xl text-white mb-6">The Consensus.</h2>
+          <h2 className="font-sans text-5xl font-bold tracking-tight text-white mb-6">The Consensus.</h2>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {REVIEWS.map((review, i) => (
@@ -335,7 +336,7 @@ export default function Home() {
               <div className="flex gap-1 mb-6">
                 {[1,2,3,4,5].map(s => <Star key={s} size={14} className="text-cyan-400" fill="currentColor" />)}
               </div>
-              <p className="text-[#e2e2e2] text-lg leading-relaxed mb-8 italic">"{review.text}"</p>
+              <p className="text-[#e2e2e2] text-lg leading-relaxed mb-8">"{review.text}"</p>
               <div>
                 <p className="text-white font-bold tracking-wide">{review.author}</p>
                 <p className="text-[10px] tracking-widest text-[#888888] uppercase">{review.role}</p>
@@ -350,10 +351,10 @@ export default function Home() {
           ======================================================================= */}
       <section className="w-full py-40 text-center z-10 relative overflow-hidden border-t border-white/5 bg-gradient-to-b from-[#030303] to-[#0a0a0a]">
         <motion.div initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ duration: 1.2 }} className="relative max-w-4xl mx-auto px-6">
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-cyan-500/10 blur-[150px] rounded-full pointer-events-none" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-cyan-500/5 blur-[150px] rounded-full pointer-events-none" />
           
-          <h2 className="font-serif text-5xl md:text-7xl lg:text-8xl text-white mb-8 relative z-10 leading-[1.1]">
-            Upgrade your <br/><span className="italic bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent">visual identity.</span>
+          <h2 className="font-sans text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight text-white mb-8 relative z-10 leading-[1.1]">
+            Upgrade your <br/><span className="bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent">visual identity.</span>
           </h2>
           <p className="text-lg text-[#888888] mb-12 max-w-xl mx-auto relative z-10">
             Join thousands of users who have already digitized their aesthetic. The Style Architecture Engine awaits.
@@ -378,7 +379,7 @@ export default function Home() {
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-16 mb-24">
             <div className="col-span-1 md:col-span-2">
-              <h2 className="font-serif text-4xl text-white mb-6">Style<span className="italic text-cyan-400">Savvy</span></h2>
+              <div className="mb-6"><StyleSavvyLogo scale={0.7} /></div>
               <p className="text-[#888888] text-sm leading-relaxed max-w-sm mb-8">The leading neural architecture for personal aesthetics. Digitize your physical wardrobe and visualize the future of fashion.</p>
               <div className="flex gap-4">
                 {[Globe, MessageCircle, Share2, Mail].map((Icon, i) => (
