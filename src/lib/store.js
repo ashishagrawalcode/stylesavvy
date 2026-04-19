@@ -5,7 +5,8 @@ export const useStyleStore = create(
   persist(
     (set) => ({
       // --- AUTHENTICATION (Mocked for now) ---
-      user: { uid: "local-dev-user", name: "Guest" }, 
+      // user: { uid: "local-dev-user", name: "Guest" }, 
+      user: null, // No user by default
       isAuthLoading: false,
       setUser: (user) => set({ user, isAuthLoading: false }),
       clearUser: () => set({ user: null, isAuthLoading: false }),
