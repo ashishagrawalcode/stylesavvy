@@ -7,8 +7,10 @@ import { useStyleStore } from "../../lib/store";
 import { usePathname, useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
 
-// Define the routes that DO NOT require a login
-const PUBLIC_ROUTES = ["/", "/login"];
+// Routes that do NOT require login
+const PUBLIC_ROUTES = ["/", "/login", "/signup"];
+// Routes where a signed-in user should be redirected away from
+const AUTH_ONLY_ROUTES = ["/login", "/signup"];
 
 export default function AuthProvider({ children }) {
   const { user, setUser, clearUser, isAuthLoading } = useStyleStore();
@@ -55,14 +57,15 @@ export default function AuthProvider({ children }) {
     if (isAuthLoading || isRouting) return;
 
     const isPublicRoute = PUBLIC_ROUTES.includes(pathname);
+    const isAuthOnlyRoute = AUTH_ONLY_ROUTES.includes(pathname);
 
     // If user is NOT logged in and tries to access a private page -> Kick to Login
     if (!user && !isPublicRoute) {
       router.push("/login");
     } 
-    // If user IS logged in but tries to view the Login page -> Push to Stylist Dashboard
-    else if (user && pathname === "/login") {
-      router.push("/stylist");
+    // If user IS logged in but tries to view login/signup -> Push to Dashboard
+    else if (user && isAuthOnlyRoute) {
+      router.push("/dashboard");
     }
   }, [user, pathname, isAuthLoading, isRouting, router]);
 

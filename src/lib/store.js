@@ -4,44 +4,49 @@ import { persist } from 'zustand/middleware';
 export const useStyleStore = create(
   persist(
     (set) => ({
-      // --- AUTHENTICATION (Mocked for now) ---
-      // user: { uid: "local-dev-user", name: "Guest" }, 
-      user: null, // No user by default
+      // ── AUTH ──────────────────────────────────────────────────────────────
+      user: null,
       isAuthLoading: false,
       setUser: (user) => set({ user, isAuthLoading: false }),
       clearUser: () => set({ user: null, isAuthLoading: false }),
 
-      // --- STYLE PROFILE ---
+      // ── STYLE PROFILE (synced from Firestore) ─────────────────────────────
       profile: {
         height: "",
         bodyShape: "",
         skinUndertone: "",
         styleVibe: "Minimalist",
+        fitPreference: "Tailored",
+        gender: "",
       },
-      updateProfile: (newProfile) => set((state) => ({ 
-        profile: { ...state.profile, ...newProfile } 
+      updateProfile: (newProfile) => set((state) => ({
+        profile: { ...state.profile, ...newProfile }
       })),
 
-      // --- DIGITAL WARDROBE ---
-      inventory: [
-        { id: 1, name: "Obsidian Structured Tee", category: "Tops", color: "bg-[#111111]" },
-        { id: 2, name: "Architectural Cargos", category: "Bottoms", color: "bg-[#14532d]" },
-      ],
+      // ── DIGITAL WARDROBE (synced from Firestore, not hardcoded) ───────────
+      inventory: [],
       setInventory: (items) => set({ inventory: items }),
-      addItem: (item) => set((state) => ({ 
-        inventory: [...state.inventory, item] 
+      addItem: (item) => set((state) => ({
+        inventory: [...state.inventory, item]
+      })),
+      removeItem: (id) => set((state) => ({
+        inventory: state.inventory.filter(i => i.id !== id)
       })),
 
-      // --- CHAT HISTORY ---
-      chatHistory: [
-        { role: "assistant", content: "System initialized in Local Mode. Waiting for Neural Link (API Keys)." }
-      ],
-      addMessage: (message) => set((state) => ({ 
-        chatHistory: [...state.chatHistory, message] 
+      // ── CHAT HISTORY ──────────────────────────────────────────────────────
+      chatHistory: [],
+      addMessage: (message) => set((state) => ({
+        chatHistory: [...state.chatHistory, message]
       })),
+      clearChat: () => set({ chatHistory: [] }),
     }),
     {
-      name: 'stylesavvy-storage', // The name of the backup in localStorage
+      name: 'stylesavvy-storage',
+      // Only persist auth and profile — wardrobe comes from Firestore live
+      partialize: (state) => ({
+        user: state.user,
+        profile: state.profile,
+      }),
     }
   )
 );

@@ -160,12 +160,12 @@ export default function Home() {
   
   // Advanced Scroll Parallax
   const { scrollYProgress } = useScroll({ target: containerRef, offset: ["start start", "end end"] });
-  const bgY = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
-  const heroOpacity = useTransform(scrollYProgress, [0, 0.15], [1, 0]);
-  const heroScale = useTransform(scrollYProgress, [0, 0.2], [1, 0.95]);
+  const bgY = useTransform(scrollYProgress, [0, 1], ["0%", "20%"]);
+  const heroOpacity = useTransform(scrollYProgress, [0, 0.2], [1, 0]);
+  // NOTE: heroScale deliberately removed — it caused content to compress/overlap on scroll
 
   return (
-    <main ref={containerRef} className="relative w-full bg-[#030303] selection:bg-cyan-500/30 selection:text-white overflow-hidden cursor-none font-sans">
+    <main ref={containerRef} className="relative w-full selection:bg-purple-500/30 selection:text-white overflow-hidden cursor-none">
       
       <CustomCursor />
       
@@ -186,8 +186,8 @@ export default function Home() {
           ZONE 1: THE EDITORIAL HERO
           ======================================================================= */}
       <motion.section 
-        style={{ opacity: heroOpacity, scale: heroScale }}
-        className="relative w-full min-h-[90vh] flex flex-col items-center justify-center px-6 pt-16 pb-10 z-10"
+        style={{ opacity: heroOpacity, minHeight: "calc(100dvh - 80px)" }}
+        className="relative w-full flex flex-col items-center justify-center px-6 pt-16 pb-10 z-10"
       >
         <div className="max-w-6xl mx-auto flex flex-col items-center text-center w-full">
           
@@ -204,7 +204,12 @@ export default function Home() {
             </div>
           </motion.div>
           
-          <motion.h1 initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1.0, delay: 0.1, ease: [0.16, 1, 0.3, 1] }} className="font-sans text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight leading-[1.05] mb-5 text-white max-w-4xl mx-auto">
+          <motion.h1
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.9, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
+            className="heading-font text-5xl sm:text-6xl lg:text-7xl font-semibold leading-[1.1] mb-5 text-white max-w-4xl mx-auto text-center"
+          >
             Intelligence in <br className="hidden sm:block" />
             <span className="relative inline-block">
               <span className="relative bg-gradient-to-r from-white via-[#e2e2e2] to-[#888888] bg-clip-text text-transparent drop-shadow-md">
@@ -213,11 +218,21 @@ export default function Home() {
             </span>
           </motion.h1>
           
-          <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1.0, delay: 0.3, ease: [0.16, 1, 0.3, 1] }} className="text-base sm:text-lg text-[#888888] mb-8 max-w-xl font-light leading-relaxed">
+          <motion.p
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.9, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+            className="text-base sm:text-lg text-[#888] mb-8 max-w-xl font-normal leading-relaxed text-center"
+          >
             The era of static fashion is over. Digitize your physical wardrobe, enter the immersive 3D Roomspace, and let our neural engine curate fits mathematically scaled to your exact geometry.
           </motion.p>
 
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, delay: 0.8 }} className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.9, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
+            className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto"
+          >
             <MagneticButton className="w-full sm:w-auto interactive group relative inline-flex items-center justify-center gap-3 px-8 py-4 bg-white text-black rounded-full text-sm font-semibold tracking-widest uppercase overflow-hidden shadow-[0_0_30px_rgba(255,255,255,0.1)]">
               <div className="absolute inset-0 bg-gradient-to-r from-white via-gray-300 to-white translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 ease-in-out" />
               <Link href="/stylist" className="relative z-10 flex items-center gap-2">Initialize Profile <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" /></Link>

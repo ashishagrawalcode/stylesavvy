@@ -1,15 +1,16 @@
 import { NextResponse } from "next/server";
-import { GoogleGenAI } from "@google/genai";
+import OpenAI from "openai";
 
 export async function POST(request) {
   try {
     const body = await request.json();
+    const apiKey = process.env.GEMINI_API_KEY || process.env.OPENAI_API_KEY;
 
-    if (!process.env.GEMINI_API_KEY) {
-      return NextResponse.json({ error: "Missing GEMINI_API_KEY in environment variables" }, { status: 500 });
+    if (!apiKey) {
+      return NextResponse.json({ error: "Missing API Key" }, { status: 500 });
     }
     
-    const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+    const openai = new OpenAI({ apiKey });
     const outfits = body.outfits || "";
 
     const prompt = `You are a fashion editor hosting a styling competition. Four participants have built their looks. Provide a brief room-level editorial observation.
@@ -24,20 +25,18 @@ Respond ONLY with valid JSON (no markdown):
   "standout": "<name of the most editorially coherent look and brief why>"
 }`;
 
-    const response = await ai.models.generateContent({
-      model: "gemini-3-flash-preview",
-      contents: prompt,
-      config: {
-        responseMimeType: "application/json",
-      }
+    const response = await openai.chat.completions.create({
+      model: "gpt-4o-mini",
+      messages: [{ role: "user", content: prompt }],
+      response_format: { type: "json_object" },
+      temperature: 0.7,
     });
 
-    const content = response.text || "{}";
+    const content = response.choices[0].message.content;
+    let parsed;
+    try { parsed = JSON.parse(content); } catch { parsed = {}; }
 
-    return NextResponse.json({
-      success: true,
-      result: content,
-    });
+    return NextResponse.json({ success: true, result: parsed });
   } catch (error) {
     console.error("Internal Server Error:", error);
     return NextResponse.json(

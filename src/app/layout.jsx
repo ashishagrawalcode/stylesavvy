@@ -30,8 +30,7 @@ export default function RootLayout({ children }) {
         style={{
           fontFamily: "'Inter', -apple-system, sans-serif",
           fontWeight: 400,
-          background: "#050505",
-          color: "#f0f0f0",
+          color: "#efefef",
         }}
       >
         {/* 🚨 THE SECURITY WRAPPER 🚨 */}
@@ -39,8 +38,8 @@ export default function RootLayout({ children }) {
           {/* Persistent navbar */}
           <Navbar />
 
-          {/* Page content — pt-28 clears the floating navbar */}
-          <main className="relative min-h-screen pt-28 pb-0">
+          {/* Page content */}
+          <main className="relative min-h-screen pt-20 pb-0">
             {children}
           </main>
 

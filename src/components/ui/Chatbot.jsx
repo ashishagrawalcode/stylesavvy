@@ -7,6 +7,7 @@ import {
   TrendingUp, Star, Zap, RefreshCw, Copy, Check,
   ShoppingBag, Clock
 } from "lucide-react";
+import { useStyleStore } from "../../lib/store";
 
 /* ─────────────────────────────────────────
    CONSTANTS
@@ -43,29 +44,22 @@ Respond conversationally but with genuine expertise. Use bullet points sparingly
 When recommending outfits, be specific: name garment types, colors, silhouettes, and how to style them. Reference the user's wardrobe context if they share it.`;
 
 /* ─────────────────────────────────────────
-   API CALL
+   API CALL — Secure server route
 ───────────────────────────────────────── */
-async function callStylistAI(messages) {
-  const response = await fetch("https://api.anthropic.com/v1/messages", {
+async function callStylistAI(messages, userContext) {
+  const response = await fetch("/api/chat", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      model: "claude-sonnet-4-20250514",
-      max_tokens: 1000,
-      system: SYSTEM_PROMPT,
-      messages: messages.map((m) => ({
-        role: m.role,
-        content: m.content,
-      })),
-    }),
+    body: JSON.stringify({ messages, userContext }),
   });
 
   if (!response.ok) {
-    throw new Error(`API error: ${response.status}`);
+    const err = await response.json().catch(() => ({}));
+    throw new Error(err.details || `API error: ${response.status}`);
   }
 
   const data = await response.json();
-  return data.content?.[0]?.text || "I couldn't generate a response. Try again!";
+  return data.text || "I couldn't generate a response. Try again!";
 }
 
 /* ─────────────────────────────────────────
@@ -268,6 +262,15 @@ function ChatWindow({ onClose }) {
   const inputRef = useRef(null);
   const latestBotIdRef = useRef("init");
 
+  // Read real user context from store
+  const { user, inventory } = useStyleStore();
+  const userContext = {
+    displayName: user?.displayName,
+    styleDNA: user?.styleDNA,
+    wardrobeCount: inventory?.length,
+    wardrobeItems: inventory,
+  };
+
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, isLoading]);
@@ -325,8 +328,8 @@ function ChatWindow({ onClose }) {
         };
         setMessages((prev) => [...prev, botMsg]);
 
-        // Call AI
-        const replyText = await callStylistAI(properMessages);
+        // Call AI with user context
+        const replyText = await callStylistAI(properMessages, userContext);
 
         setMessages((prev) =>
           prev.map((m) =>

@@ -28,6 +28,8 @@ import {
   Layers,
 } from "lucide-react";
 import { cn } from "../../lib/utils";
+import { useStyleStore } from "../../lib/store";
+import { LayoutDashboard } from "lucide-react";
 
 /* ─────────────────────────────────────────
    NAV DATA
@@ -227,6 +229,7 @@ function DropdownMenu({ items, isVisible }) {
 ───────────────────────────────────────── */
 export default function Navbar() {
   const pathname = usePathname();
+  const { user } = useStyleStore();
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState(null);
@@ -381,43 +384,39 @@ export default function Navbar() {
 
           {/* Auth + CTA buttons */}
           <div className="hidden md:flex items-center gap-2">
-            {/* <Link
-              href="/login"
-              className="flex items-center gap-1.5 px-4 py-2 rounded-full text-sm transition-all duration-200"
-              style={{
-                color: "#666",
-                fontWeight: 400,
-                background: "transparent",
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.color = "#e0e0e0";
-                e.currentTarget.style.background =
-                  "rgba(255,255,255,0.05)";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.color = "#666";
-                e.currentTarget.style.background = "transparent";
-              }}
-            >
-              <LogIn size={13} />
-              Sign In
-            </Link> */}
-
-            <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
-              <Link
-                href="/signup"
-                className="flex items-center gap-2 px-5 py-2 rounded-full text-sm whitespace-nowrap"
-                style={{
-                  background: "#ffffff",
-                  color: "#000000",
-                  fontWeight: 500,
-                  boxShadow: "0 2px 12px rgba(255,255,255,0.1)",
-                }}
-              >
-                <UserPlus size={13} />
-                Get Started
-              </Link>
-            </motion.div>
+            {user ? (
+              <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
+                <Link
+                  href="/dashboard"
+                  className="flex items-center gap-2 px-5 py-2 rounded-full text-sm whitespace-nowrap"
+                  style={{
+                    background: "linear-gradient(135deg, rgba(155,89,255,0.15) 0%, rgba(6,182,212,0.15) 100%)",
+                    color: "#e0e0e0",
+                    fontWeight: 500,
+                    border: "1px solid rgba(155,89,255,0.25)",
+                  }}
+                >
+                  <LayoutDashboard size={13} style={{ color: "#a855f7" }} />
+                  Dashboard
+                </Link>
+              </motion.div>
+            ) : (
+              <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
+                <Link
+                  href="/signup"
+                  className="flex items-center gap-2 px-5 py-2 rounded-full text-sm whitespace-nowrap"
+                  style={{
+                    background: "#ffffff",
+                    color: "#000000",
+                    fontWeight: 500,
+                    boxShadow: "0 2px 12px rgba(255,255,255,0.1)",
+                  }}
+                >
+                  <UserPlus size={13} />
+                  Get Started
+                </Link>
+              </motion.div>
+            )}
           </div>
 
           {/* Mobile hamburger */}
