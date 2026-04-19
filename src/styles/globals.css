@@ -90,7 +90,70 @@ h1, h2, h3, h4, h5, h6, .heading-font {
   box-shadow: 0 0 0 1px rgba(155, 89, 255, 0.08), 0 20px 40px rgba(0, 0, 0, 0.4);
   transform: translateY(-1px);
 }
+.section-card {
+  border-radius: 24px;
+  padding: 28px;
+  background: rgba(10, 10, 16, 0.86);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(18px);
+  transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
 
+.section-card:hover {
+  transform: translateY(-1px);
+  border-color: rgba(155, 89, 255, 0.14);
+}
+
+.tab-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.03);
+  color: #d4d4e1;
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.25s ease, border-color 0.2s ease, background 0.2s ease, color 0.2s ease;
+}
+
+.tab-pill:hover {
+  border-color: rgba(155, 89, 255, 0.16);
+  background: rgba(155, 89, 255, 0.08);
+  transform: translateY(-1px);
+}
+
+.tab-pill.active {
+  color: #fff;
+  background: rgba(155, 109, 255, 0.2);
+  border-color: rgba(155, 89, 255, 0.25);
+}
+
+.section-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(22px, 2.5vw, 28px);
+  color: #ffffff;
+  margin-bottom: 8px;
+}
+
+.info-note {
+  color: rgba(255, 255, 255, 0.68);
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  line-height: 1.75;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
 /* ===========================
    TYPOGRAPHY GRADIENTS
 =========================== */

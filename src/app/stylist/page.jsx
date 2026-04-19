@@ -377,23 +377,24 @@ export default function StylistPage(){
         <h1 style={{fontFamily:C.serif,fontSize:"clamp(36px,5vw,58px)",color:C.text,fontWeight:400,lineHeight:1.05,marginBottom:12}}>
           Calibrate Your{" "}<span style={{background:`linear-gradient(135deg,${C.purple},${C.cyan})`,WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent"}}>Style DNA</span>
         </h1>
-        <p style={{fontFamily:C.sans,fontSize:14,color:C.textMid,lineHeight:1.7,maxWidth:480,margin:"0 auto",marginBottom:lastUpdated?8:0}}>Your profile powers AI curation across RoomSpace, Wardrobe, and the stylist chatbot.</p>
-        {lastUpdated&&<p style={{fontFamily:C.sans,fontSize:10,color:C.textLow,display:"flex",alignItems:"center",justifyContent:"center",gap:5}}><Clock size={9}/>Last updated {lastUpdated}</p>}
+        <p style={{fontFamily:C.sans,fontSize:14,color:C.textMid,lineHeight:1.7,maxWidth:520,margin:"0 auto",marginBottom:lastUpdated?8:0}}>Your profile powers AI curation across RoomSpace, Wardrobe, and the stylist chatbot.</p>
+        {!profileComplete && <p className="info-note" style={{maxWidth:560,margin:"12px auto 0"}}>Complete the core profile fields to unlock tailored recommendations, smarter outfit analysis, and faster style generation.</p>}
+        {lastUpdated&&<p style={{fontFamily:C.sans,fontSize:10,color:C.textLow,display:"flex",alignItems:"center",justifyContent:"center",gap:5,marginTop:12}}><Clock size={9}/>Last updated {lastUpdated}</p>}
       </motion.div>
 
       {/* Tabs */}
       <motion.div initial={{opacity:0,y:14}} animate={{opacity:1,y:0}} transition={{delay:0.15,duration:0.6}} style={{display:"flex",justifyContent:"center",marginBottom:32}}>
-        <div style={{display:"flex",padding:4,borderRadius:99,background:"rgba(12,12,22,0.8)",border:`1px solid ${C.border}`,gap:2}}>
+        <div style={{display:"flex",padding:6,borderRadius:999,background:"rgba(12,12,22,0.8)",border:`1px solid ${C.border}`,gap:4}}>
           {[{id:"scan",icon:Camera,label:"AI Photo Scan"},{id:"manual",icon:Sliders,label:"Manual Entry"}].map(tab=>(
-            <button key={tab.id} onClick={()=>setActiveTab(tab.id)} style={{display:"flex",alignItems:"center",gap:8,padding:"10px 24px",borderRadius:99,background:activeTab===tab.id?"#ffffff":"transparent",color:activeTab===tab.id?"#000000":C.textMid,fontFamily:C.sans,fontSize:12,fontWeight:600,cursor:"pointer",border:"none",transition:"all 0.25s"}}>
+            <motion.button key={tab.id} type="button" whileHover={{y:-1}} onClick={()=>setActiveTab(tab.id)} className={`tab-pill ${activeTab===tab.id?"active":""}`}>
               <tab.icon size={14}/><span>{tab.label}</span>
-            </button>
+            </motion.button>
           ))}
         </div>
       </motion.div>
 
       {/* Content card */}
-      <motion.div initial={{opacity:0}} animate={{opacity:1}} transition={{delay:0.2,duration:0.5}} style={{borderRadius:24,padding:"32px 32px",marginBottom:24,background:C.surface,border:`1px solid ${C.border}`,backdropFilter:"blur(20px)"}}>
+      <motion.div initial={{opacity:0}} animate={{opacity:1}} transition={{delay:0.2,duration:0.5}} className="section-card" style={{marginBottom:24,overflow:"hidden"}}>
         <AnimatePresence mode="wait">
           {activeTab==="scan"
             ?<motion.div key="scan" initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} transition={{duration:0.25}}><ScanTab onComplete={handleScanComplete}/></motion.div>
@@ -404,21 +405,21 @@ export default function StylistPage(){
 
       {/* Action bar */}
       <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",flexWrap:"wrap",gap:12,marginBottom:48}}>
-        <button onClick={()=>router.push("/dashboard")} style={{fontFamily:C.sans,fontSize:11,color:C.textLow,background:"none",border:"none",cursor:"pointer"}} onMouseEnter={e=>e.currentTarget.style.color=C.textMid} onMouseLeave={e=>e.currentTarget.style.color=C.textLow}>← Back to Dashboard</button>
+        <motion.button whileHover={{y:-1}} onClick={()=>router.push("/dashboard")} style={{fontFamily:C.sans,fontSize:11,color:C.textLow,background:"none",border:"none",cursor:"pointer"}}>← Back to Dashboard</motion.button>
         <div style={{display:"flex",alignItems:"center",gap:10}}>
-          <button onClick={generateAnalysis} disabled={isAnalysing||!profileComplete} style={{display:"flex",alignItems:"center",gap:6,padding:"10px 20px",borderRadius:99,background:"transparent",border:`1px solid ${profileComplete?C.purple+"50":C.border}`,color:profileComplete?C.purple:C.textLow,fontFamily:C.sans,fontSize:12,fontWeight:600,cursor:profileComplete?"pointer":"not-allowed",transition:"all 0.2s"}}>
+          <motion.button whileHover={profileComplete?{y:-1}:{}} whileTap={profileComplete?{scale:0.98}:{}} onClick={generateAnalysis} disabled={isAnalysing||!profileComplete} style={{display:"flex",alignItems:"center",gap:6,padding:"10px 20px",borderRadius:99,background:"transparent",border:`1px solid ${profileComplete?C.purple+"50":C.border}`,color:profileComplete?C.purple:C.textLow,fontFamily:C.sans,fontSize:12,fontWeight:600,cursor:profileComplete?"pointer":"not-allowed",transition:"all 0.2s"}}>
             {isAnalysing?<Loader2 size={13} style={{animation:"spin 1s linear infinite"}}/>:<Wand2 size={13}/>}{analysis?"Refresh Analysis":"Generate Analysis"}
-          </button>
-          <button onClick={handleSave} disabled={saving} style={{display:"flex",alignItems:"center",gap:7,padding:"10px 28px",borderRadius:99,background:saved?`linear-gradient(135deg,${C.green},#10c066)`:`linear-gradient(135deg,${C.purple},${C.cyan})`,border:"none",color:"#fff",fontFamily:C.sans,fontSize:12,fontWeight:700,cursor:"pointer",transition:"all 0.3s",boxShadow:saved?`0 0 24px ${C.green}40`:`0 4px 20px ${C.purple}35`}}>
+          </motion.button>
+          <motion.button whileHover={{y:-1}} whileTap={{scale:0.98}} onClick={handleSave} disabled={saving} style={{display:"flex",alignItems:"center",gap:7,padding:"10px 28px",borderRadius:99,background:saved?`linear-gradient(135deg,${C.green},#10c066)`:`linear-gradient(135deg,${C.purple},${C.cyan})`,border:"none",color:"#fff",fontFamily:C.sans,fontSize:12,fontWeight:700,cursor:"pointer",transition:"all 0.3s",boxShadow:saved?`0 0 24px ${C.green}40`:`0 4px 20px ${C.purple}35`}}>
             {saving?<Loader2 size={13} style={{animation:"spin 1s linear infinite"}}/>:saved?<CheckCircle2 size={13} style={{color:"#d1fae5"}}/>:<Save size={13}/>}{saving?"Saving...":saved?"Saved!":"Save Profile"}
-          </button>
+          </motion.button>
         </div>
       </div>
 
       {/* Analysis */}
       <AnimatePresence>
         {(isAnalysing||analysis)&&(isAnalysing
-          ?<motion.div key="loading" initial={{opacity:0,y:32}} animate={{opacity:1,y:0}} exit={{opacity:0}} style={{borderRadius:24,padding:"72px 32px",background:C.surface,border:`1px solid ${C.border}`,display:"flex",flexDirection:"column",alignItems:"center",gap:16,textAlign:"center",marginBottom:40}}>
+          ?<motion.div key="loading" initial={{opacity:0,y:32}} animate={{opacity:1,y:0}} exit={{opacity:0}} className="section-card" style={{padding:"56px 32px",display:"flex",flexDirection:"column",alignItems:"center",gap:16,textAlign:"center",marginBottom:40}}>
             <div style={{position:"relative"}}><motion.div animate={{rotate:360}} transition={{duration:2.5,repeat:Infinity,ease:"linear"}} style={{width:56,height:56,borderRadius:"50%",border:`2px solid ${C.border}`,borderTop:`2px solid ${C.purple}`}}/><Sparkles size={22} style={{position:"absolute",top:"50%",left:"50%",transform:"translate(-50%,-50%)",color:C.purple}}/></div>
             <h3 style={{fontFamily:C.serif,fontSize:24,color:C.text,fontWeight:400}}>Synthesizing Style DNA...</h3>
             <p style={{fontFamily:C.sans,fontSize:12,color:C.textLow,maxWidth:360,lineHeight:1.7}}>GPT-4o is curating your personalized editorial identity, colour palette, outfit formulas, and brand alignment.</p>
